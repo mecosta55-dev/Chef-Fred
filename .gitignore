@@ -1,0 +1,7 @@
+# Ignorar tudo por padrão
+*
+
+# Permitir explicitamente apenas os HTMLs
+!.gitignore
+!*.html
+!*.md

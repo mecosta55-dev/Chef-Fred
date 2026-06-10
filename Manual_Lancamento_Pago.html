@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual do Lançamento Pago</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3354;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --accent3: #43e97b;
+      --accent4: #f9ca24;
+      --text: #e2e8f0;
+      --text-muted: #8892b0;
+      --text-dim: #4a5568;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    #sidebar {
+      width: 280px;
+      min-width: 280px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+      padding: 24px 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo h2 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-logo p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 0 16px;
+      margin-bottom: 8px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 8px 8px 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .nav-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN ── */
+    #main {
+      flex: 1;
+      max-width: 860px;
+      padding: 48px 56px;
+      overflow-y: auto;
+    }
+
+    /* ── HEADER ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(108,99,255,0.15);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(108,99,255,0.3);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #e2e8f0, #8892b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 520px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-align: center;
+    }
+
+    .hero-stat .val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent3);
+    }
+
+    .hero-stat .lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      margin-bottom: 64px;
+      scroll-margin-top: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .section-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+
+    h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin: 20px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p { color: var(--text-muted); margin-bottom: 12px; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .card p { margin: 0; font-size: 13px; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-accent { border-left: 3px solid var(--accent); }
+    .card-green  { border-left: 3px solid var(--accent3); }
+    .card-yellow { border-left: 3px solid var(--accent4); }
+    .card-red    { border-left: 3px solid var(--accent2); }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(46,51,84,0.5);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    td strong { color: var(--text); }
+    td .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(108,99,255,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(108,99,255,0.3);
+    }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 13px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .callout-text { color: var(--text-muted); }
+    .callout-text strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+    .callout-blue   { background: rgba(108,99,255,0.08); border: 1px solid rgba(108,99,255,0.2); }
+    .callout-green  { background: rgba(67,233,123,0.08); border: 1px solid rgba(67,233,123,0.2); }
+    .callout-yellow { background: rgba(249,202,36,0.08); border: 1px solid rgba(249,202,36,0.2); }
+    .callout-red    { background: rgba(255,101,132,0.08); border: 1px solid rgba(255,101,132,0.2); }
+
+    /* ── CHECKLIST ── */
+    .checklist { list-style: none; padding: 0; }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(46,51,84,0.4);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .checklist li:last-child { border-bottom: none; }
+
+    .checklist li::before {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 24px; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+
+    .timeline-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-content {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .timeline-content strong { color: var(--text); }
+
+    /* ── FORMULA ── */
+    .formula-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--accent3);
+      margin: 12px 0;
+    }
+
+    /* ── COPY TEMPLATE ── */
+    .copy-template {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 12px 0;
+    }
+
+    .copy-template .placeholder {
+      color: var(--accent4);
+      font-style: italic;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin: 2px;
+    }
+
+    .badge-purple { background: rgba(108,99,255,0.15); color: var(--accent); border: 1px solid rgba(108,99,255,0.3); }
+    .badge-green  { background: rgba(67,233,123,0.15); color: var(--accent3); border: 1px solid rgba(67,233,123,0.3); }
+    .badge-yellow { background: rgba(249,202,36,0.15); color: var(--accent4); border: 1px solid rgba(249,202,36,0.3); }
+    .badge-red    { background: rgba(255,101,132,0.15); color: var(--accent2); border: 1px solid rgba(255,101,132,0.3); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    /* ── PHASE BAR ── */
+    .phase-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+    }
+
+    .phase-step {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .phase-step.active {
+      background: rgba(108,99,255,0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .phase-step .num {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    /* ── GRID 2COL ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      #main { padding: 24px 20px; }
+      #sidebar { display: none; }
+    }
+
+    /* ── METRIC CARD ── */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+
+    .metric-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .metric-ref {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+
+    /* ── QUOTE ── */
+    blockquote {
+      border-left: 3px solid var(--accent);
+      margin: 16px 0;
+      padding: 12px 20px;
+      background: rgba(108,99,255,0.05);
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    blockquote strong { color: var(--text); font-style: normal; }
+
+    /* ── SCROLL ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <h2>Lançamento Pago</h2>
+    <p>Manual completo · Chef Fred</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Fundamentos</div>
+    <a class="nav-item" href="#s0"><span class="dot" style="background:#6c63ff"></span>O que é (e o que não é)</a>
+    <a class="nav-item" href="#s1"><span class="dot" style="background:#6c63ff"></span>Por que funciona</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Planejamento</div>
+    <a class="nav-item" href="#s2"><span class="dot" style="background:#43e97b"></span>Promessa e oferta</a>
+    <a class="nav-item" href="#s3"><span class="dot" style="background:#43e97b"></span>Esteira de produtos</a>
+    <a class="nav-item" href="#s4"><span class="dot" style="background:#43e97b"></span>Precificação e lotes</a>
+    <a class="nav-item" href="#s5"><span class="dot" style="background:#43e97b"></span>Planejamento financeiro</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Captação</div>
+    <a class="nav-item" href="#s6"><span class="dot" style="background:#f9ca24"></span>Meta Ads — estrutura</a>
+    <a class="nav-item" href="#s7"><span class="dot" style="background:#f9ca24"></span>Criativos campeões</a>
+    <a class="nav-item" href="#s8"><span class="dot" style="background:#f9ca24"></span>API Oficial e base</a>
+    <a class="nav-item" href="#s9"><span class="dot" style="background:#f9ca24"></span>Teste A/B de página</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Evento</div>
+    <a class="nav-item" href="#s10"><span class="dot" style="background:#ff6584"></span>Formato e estrutura</a>
+    <a class="nav-item" href="#s11"><span class="dot" style="background:#ff6584"></span>Narrativa e seeding</a>
+    <a class="nav-item" href="#s12"><span class="dot" style="background:#ff6584"></span>Order Bumps</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Abertura de Carrinho</div>
+    <a class="nav-item" href="#s13"><span class="dot" style="background:#6c63ff"></span>Cronograma</a>
+    <a class="nav-item" href="#s14"><span class="dot" style="background:#6c63ff"></span>Copy e escassez</a>
+    <a class="nav-item" href="#s15"><span class="dot" style="background:#6c63ff"></span>Pit de vendas</a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Métricas e Controle</div>
+    <a class="nav-item" href="#s16"><span class="dot" style="background:#43e97b"></span>KPIs por fase</a>
+    <a class="nav-item" href="#s17"><span class="dot" style="background:#43e97b"></span>Planilha de controle</a>
+    <a class="nav-item" href="#s18"><span class="dot" style="background:#43e97b"></span>Checklists</a>
+  </div>
+</nav>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<main id="main">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero-tag">Manual Completo</div>
+    <h1>Lançamento Pago:<br>do Zero ao Pit</h1>
+    <p>Framework completo para planejar, captar, executar e converter um lançamento pago com base em dados reais de múltiplos lançamentos validados.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">4–5x</div><div class="lbl">ROAS possível</div></div>
+      <div class="hero-stat"><div class="val">20%</div><div class="lbl">Conversão base</div></div>
+      <div class="hero-stat"><div class="val">~65%</div><div class="lbl">Tráfego pago pelos ingressos</div></div>
+      <div class="hero-stat"><div class="val">3</div><div class="lbl">Order Bumps ideais</div></div>
+    </div>
+  </div>
+
+  <!-- ── FASE BAR ── -->
+  <div class="phase-bar">
+    <div class="phase-step"><span class="num">1</span>Planejamento</div>
+    <div class="phase-step"><span class="num">2</span>Captação</div>
+    <div class="phase-step"><span class="num">3</span>Evento</div>
+    <div class="phase-step"><span class="num">4</span>Carrinho</div>
+    <div class="phase-step"><span class="num">5</span>Pós-venda</div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       FUNDAMENTOS
+  ══════════════════════════════════════ -->
+  <div class="section" id="s0">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent)">01</div>
+      <div>
+        <div class="section-title">O que é um Lançamento Pago</div>
+        <div class="section-subtitle">Conceito, diferenças e quando usar</div>
+      </div>
+    </div>
+
+    <blockquote>"Um lançamento pago nada mais é do que um <strong>low ticket com uma ascensão programada</strong>."</blockquote>
+
+    <p>O modelo funciona assim: você vende ingressos baratos para um evento ao vivo (imersão/workshop/aula), entrega valor real durante o evento e, no final, faz o pit para um produto principal de ticket mais alto.</p>
+
+    <h3>Lançamento Pago vs Lançamento Gratuito</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Dimensão</th><th>Lançamento Gratuito</th><th>Lançamento Pago</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Risco financeiro</strong></td><td>Alto — tráfego 100% custo</td><td>Baixo — ingressos cobrem tráfego</td></tr>
+          <tr><td><strong>Qualidade dos leads</strong></td><td>Mista — só comprometimento de tempo</td><td>Alta — comprometimento de dinheiro + tempo</td></tr>
+          <tr><td><strong>Comparecimento</strong></td><td>Baixo (10–30%)</td><td>Alto (50–80%) — "paguei, vou assistir"</td></tr>
+          <tr><td><strong>Volume de captação</strong></td><td>Alto</td><td>Menor — barreira financeira filtra</td></tr>
+          <tr><td><strong>Conversão no pit</strong></td><td>Menor (8–15% lista)</td><td>Maior (14–26% de quem assistiu)</td></tr>
+          <tr><td><strong>Necessidade de entrega</strong></td><td>Flexível</td><td>Obrigatória — é um produto vendido</td></tr>
+          <tr><td><strong>ROAS esperado</strong></td><td>2–3x no bom</td><td>4–5x possível com estrutura completa</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Quando usar lançamento pago</h3>
+    <div class="card-grid">
+      <div class="card card-green">
+        <div class="card-title">✅ Contextos ideais</div>
+        <p>Você já tem um produto principal validado (R$500+). Tem base (e-mail, WhatsApp, seguidores). Quer escalar com menor risco. Quer leads mais qualificadas. Tem capacidade de entregar um evento com valor real.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">⚠️ Não use quando</div>
+        <p>Não tem produto principal definido para vender no pit. Não tem autoridade no nicho ainda. Não tem capacidade de entregar um evento de qualidade. Quer escala rápida sem refinamento da oferta.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POR QUE FUNCIONA ── -->
+  <div class="section" id="s1">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent)">02</div>
+      <div>
+        <div class="section-title">Por que o Lançamento Pago funciona</div>
+        <div class="section-subtitle">A psicologia por trás do modelo</div>
+      </div>
+    </div>
+
+    <h3>As duas lacunas de uma venda</h3>
+    <p>Para uma venda de produto digital acontecer, a pessoa precisa estar disposta a preencher duas lacunas:</p>
+
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="card-title">🕐 Lacuna 1 — Tempo</div>
+        <p>Disposta a investir tempo para aprender. Uma isca gratuita preenche isso, mas só isso.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">💰 Lacuna 2 — Dinheiro</div>
+        <p>Disposta a investir dinheiro para resolver o problema. Só um ingresso pago confirma as duas lacunas.</p>
+      </div>
+    </div>
+
+    <blockquote>"Quando coloco um ingresso de R$60, a pessoa já abriu a carteira. Isso me diz que ela está disposta a investir — e o produto principal se torna um passo natural, não um choque."</blockquote>
+
+    <h3>Efeito do comprometimento financeiro</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Comportamento</th><th>Lead gratuita</th><th>Lead compradora de ingresso</th></tr></thead>
+        <tbody>
+          <tr><td>Taxa de comparecimento</td><td>10–30%</td><td>50–80%</td></tr>
+          <tr><td>Atenção durante aulas</td><td>Baixa</td><td>Alta</td></tr>
+          <tr><td>Engajamento no chat/grupo</td><td>Passivo</td><td>Ativo</td></tr>
+          <tr><td>Probabilidade de compra no pit</td><td>Baixa</td><td>Alta</td></tr>
+          <tr><td>Reclamações / cancelamentos</td><td>Altos</td><td>Baixos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text"><strong>A lógica do tráfego pago pelos ingressos</strong>
+        Com a estrutura correta, os ingressos cobrem o custo de tráfego antes mesmo do pit de vendas. Isso elimina a pressão psicológica do expert e permite escalar mais agressivamente sem medo de prejuízo.</div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       PLANEJAMENTO
+  ══════════════════════════════════════ -->
+  <div class="section" id="s2">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">03</div>
+      <div>
+        <div class="section-title">Promessa e Oferta do Ingresso</div>
+        <div class="section-subtitle">Como construir a proposta de valor do evento</div>
+      </div>
+    </div>
+
+    <h3>Estrutura de promessa que funciona</h3>
+    <p>Evite promessas genéricas de aprendizado. O lançamento pago precisa de uma promessa de <strong>execução e resultado tangível</strong>.</p>
+
+    <div class="card-grid">
+      <div class="card card-green">
+        <div class="card-title">✅ Fórmula A — Resultado em Tempo</div>
+        <p class="copy-template">"Como <span class="placeholder">[atingir resultado]</span> em até <span class="placeholder">[X dias/aulas]</span> mesmo que <span class="placeholder">[objeção principal]</span>"</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Fórmula B — Problema + Solução</div>
+        <p class="copy-template">"O método que <span class="placeholder">[perfil]</span> usa para <span class="placeholder">[resolver X]</span> sem <span class="placeholder">[custo/obstáculo]</span>"</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Fórmula C — Resultado Concreto</div>
+        <p class="copy-template">"Em <span class="placeholder">[X aulas]</span> vamos <span class="placeholder">[criar/montar/estruturar]</span> juntos o seu <span class="placeholder">[entregável concreto]</span>"</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">❌ Evitar</div>
+        <p>Verbos de aprendizado: "aprenda", "entenda", "descubra", "saiba". Substituir por: "monte", "crie", "estruture", "aplique", "execute".</p>
+      </div>
+    </div>
+
+    <h3>Exemplos para o Chef Fred</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Promessa</th><th>Público</th><th>Produto principal sugerido</th></tr></thead>
+        <tbody>
+          <tr><td>"Em 3 aulas, monte seu cardápio de buffet com fichas técnicas e CMV calculado"</td><td>Buffeteiros iniciantes</td><td>Mentoria ou curso avançado</td></tr>
+          <tr><td>"Como precificar e vender buffet lucrativo em 25 dias, do zero"</td><td>Profissionais de gastronomia</td><td>Planilha CMV + acompanhamento</td></tr>
+          <tr><td>"O método para montar uma operação de buffet que vende sem depender de indicação"</td><td>Chefs com buffet ativo</td><td>Consultoria / programa completo</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Características obrigatórias do evento</h3>
+    <ul class="checklist">
+      <li>Promessa específica e mensurável ("vamos montar X juntos")</li>
+      <li>Entregável concreto ao final das aulas (planilha pronta, cardápio, estratégia)</li>
+      <li>Foco em execução — não apenas teoria</li>
+      <li>Número definido de aulas (2–4 sessões ideais)</li>
+      <li>Data e horário fixos (cria comprometimento)</li>
+      <li>Acesso ao replay como offer separada (não gratuito)</li>
+    </ul>
+  </div>
+
+  <!-- ── ESTEIRA ── -->
+  <div class="section" id="s3">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">04</div>
+      <div>
+        <div class="section-title">Esteira de Produtos</div>
+        <div class="section-subtitle">O lançamento pago como parte de uma ascensão planejada</div>
+      </div>
+    </div>
+
+    <div class="callout callout-yellow">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-text"><strong>Erro fatal:</strong> fazer lançamento pago no "Eu te Ensino" para vender outro "Eu te Ensino". As pessoas sentem que já receberam o suficiente e não compram o próximo produto. O produto principal deve ter um grau diferente de entrega.</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Pilar</th><th>Tipo de entrega</th><th>Ticket</th><th>Exemplo Chef Fred</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Eu te Ensino</strong> <span class="tag">INGRESSO</span></td>
+            <td>Evento ao vivo + conteúdo estruturado. Aluno aprende e aplica sozinho.</td>
+            <td>R$37–97</td>
+            <td>Imersão Buffet Lucrativo (3 aulas)</td>
+          </tr>
+          <tr>
+            <td><strong>Eu te Ensino</strong> <span class="tag">PRODUTO PRINCIPAL</span></td>
+            <td>Curso completo, gravado, com material de apoio. Aluno executa sozinho.</td>
+            <td>R$197–997</td>
+            <td>Buffet Lucrativo em 25 Dias + Planilha CMV</td>
+          </tr>
+          <tr>
+            <td><strong>Eu Automatizo</strong></td>
+            <td>Ferramenta, planilha avançada, template pronto para usar.</td>
+            <td>R$97–497</td>
+            <td>Kit Operacional Buffet (cardápios + fichas + orçamentos)</td>
+          </tr>
+          <tr>
+            <td><strong>Eu te Acompanho</strong></td>
+            <td>Mentoria, assessoria com suporte contínuo. Personalizado.</td>
+            <td>R$1k–10k</td>
+            <td>Mentoria Buffet (revisão de cardápio + precificação + suporte)</td>
+          </tr>
+          <tr>
+            <td><strong>Eu Faço por Você</strong></td>
+            <td>Serviço executado integralmente. Chef ou sua equipe entrega.</td>
+            <td>R$5k+</td>
+            <td>Consultoria in-company ou coproduçao</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PRECIFICAÇÃO ── -->
+  <div class="section" id="s4">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">05</div>
+      <div>
+        <div class="section-title">Precificação e Lotes</div>
+        <div class="section-subtitle">Como estruturar os lotes para maximizar receita e criar urgência</div>
+      </div>
+    </div>
+
+    <h3>Lógica dos lotes</h3>
+    <p>Os lotes criam dois efeitos: <strong>urgência real</strong> (preço sobe) e <strong>picos de venda</strong> previsíveis. Toda virada de lote deve gerar um spike nas vendas.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Lote</th><th>Quantidade</th><th>Preço</th><th>Objetivo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Lote 0 — Early Bird</strong></td><td>50–100</td><td>R$27–37</td><td>Primeiros compradores, gera prova social</td></tr>
+          <tr><td><strong>Lotes 1–3</strong></td><td>100–200 cada</td><td>R$37–57</td><td>Volume principal, alimenta o algoritmo</td></tr>
+          <tr><td><strong>Lotes 4–6</strong></td><td>50–100 cada</td><td>R$57–74</td><td>Escassez gradual, eleva ticket médio</td></tr>
+          <tr><td><strong>Lote Final</strong></td><td>Ilimitado</td><td>R$74–97</td><td>Último preço, máxima urgência</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="formula-box">
+      Ticket médio ingresso = Σ (qtd lote × preço lote) / total de ingressos
+    </div>
+
+    <h3>Quanto o ingresso costuma representar</h3>
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-val">65%</div>
+        <div class="metric-lbl">das vendas são de ingressos</div>
+        <div class="metric-ref">Mas só 34% do faturamento</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">35%</div>
+        <div class="metric-lbl">das vendas são Order Bumps + prod. principal</div>
+        <div class="metric-ref">66% do faturamento total</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">2×</div>
+        <div class="metric-lbl">LTV vs ticket de ingresso</div>
+        <div class="metric-ref">Com bumps e pit bem estruturados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLANEJAMENTO FINANCEIRO ── -->
+  <div class="section" id="s5">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">06</div>
+      <div>
+        <div class="section-title">Planejamento Financeiro</div>
+        <div class="section-subtitle">Como calcular a meta de investimento e receita projetada</div>
+      </div>
+    </div>
+
+    <h3>Modelo de projeção</h3>
+    <div class="formula-box">
+Ingressos meta: X unidades × ticket médio = Receita ingressos
++ Order Bump 1 (replay):    X × 20% conversão × preço bump
++ Order Bump 2 (conteúdo):  X × 18–32% conversão × preço bump
++ Order Bump 3 (ferramenta): X × 15% conversão × preço
++ Produto principal:         X × 6–26% conversão × preço produto
++ Downsell (se aplicável):   X × 7% conversão × preço menor
+= Receita total projetada
+    </div>
+
+    <h3>Taxas de referência para projeção</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Etapa</th><th>Taxa conservadora</th><th>Taxa realista</th><th>Taxa otimista</th></tr></thead>
+        <tbody>
+          <tr><td>Conversão ingresso → produto principal</td><td>6%</td><td>14%</td><td>26%</td></tr>
+          <tr><td>Conversão gravações → produto principal</td><td>20%</td><td>22%</td><td>27%</td></tr>
+          <tr><td>Order Bump replay</td><td>9%</td><td>15%</td><td>25%</td></tr>
+          <tr><td>Order Bump conteúdo/debrief</td><td>10%</td><td>20%</td><td>32%</td></tr>
+          <tr><td>Order Bump ferramenta/template</td><td>8%</td><td>15%</td><td>22%</td></tr>
+          <tr><td>Downsell</td><td>5%</td><td>7%</td><td>12%</td></tr>
+          <tr><td>Cashback (conversão via desconto)</td><td>3%</td><td>10%</td><td>18%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-icon">📊</div>
+      <div class="callout-text"><strong>Meta mínima de tráfego pago pelos ingressos:</strong>
+        Antes de lançar, calcule se a receita de ingressos cobre o investimento em tráfego planejado. Se sim, você entra no pit com risco zero — qualquer conversão é lucro.</div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       CAPTAÇÃO
+  ══════════════════════════════════════ -->
+  <div class="section" id="s6">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(249,202,36,0.15);color:var(--accent4)">07</div>
+      <div>
+        <div class="section-title">Meta Ads — Estrutura de Campanha</div>
+        <div class="section-subtitle">Como estruturar o tráfego pago para captação de ingressos</div>
+      </div>
+    </div>
+
+    <h3>Fases de escala no Meta</h3>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">Fase 1 — Exploração (semana 1)</div>
+        <div class="timeline-content">
+          <strong>Advantage+ (público aberto)</strong> — todos os criativos no mesmo conjunto de anúncios. Objetivo: encontrar quais criativos vendem. Orçamento baixo (R$30–50/dia). Medir por UTM, não pelo gerenciador.
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Fase 2 — Isolamento (semana 2)</div>
+        <div class="timeline-content">
+          <strong>Criativos campeões isolados</strong> — cada criativo vencedor em um conjunto separado. Identifica qual tem melhor custo/venda real.
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Fase 3 — Consolidação (semana 3)</div>
+        <div class="timeline-content">
+          <strong>Advantage+ com campeões</strong> — criativos vencedores reunidos no mesmo conjunto. Escala agressiva com orçamento maior.
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Fase 4 — Single Shot (últimos dias)</div>
+        <div class="timeline-content">
+          <strong>Público quente com anúncio de aparição única</strong> — público que viu 75%+ dos criativos anteriores + visitou o site. Exclusão de quem já comprou e quem já viu o anúncio. Copy: "esse anúncio só aparece para você uma vez". Conversão altíssima.
+        </div>
+      </div>
+    </div>
+
+    <h3>Estrutura do "Single Shot"</h3>
+    <div class="card card-accent">
+      <div class="card-title">Campanha Single Shot — Configuração</div>
+      <div class="table-wrap" style="margin-top:12px">
+        <table>
+          <thead><tr><th>Parâmetro</th><th>Configuração</th></tr></thead>
+          <tbody>
+            <tr><td>Objetivo</td><td>Conversão (compra)</td></tr>
+            <tr><td>Público</td><td>75% video views + site visitors dos últimos 30 dias</td></tr>
+            <tr><td>Exclusão</td><td>Compradores + quem engajou com esse anúncio</td></tr>
+            <tr><td>Frequência limite</td><td>1 impressão por pessoa (via configuração de frequência)</td></tr>
+            <tr><td>Timing</td><td>Últimos 3–5 dias de captação</td></tr>
+            <tr><td>Precificação</td><td>Testar 3 preços diferentes (mesmo criativo, URLs diferentes)</td></tr>
+            <tr><td>Copy central</td><td>"Esse anúncio só vai aparecer para você uma única vez."</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Métricas de tráfego por fonte</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Canal</th><th>CPL esperado</th><th>Taxa de conversão</th><th>Melhor para</th></tr></thead>
+        <tbody>
+          <tr><td>Meta Ads (público frio)</td><td>R$8–25</td><td>1–4%</td><td>Volume e escala</td></tr>
+          <tr><td>Meta Ads (Lookalike compradores)</td><td>R$6–18</td><td>2–6%</td><td>Qualidade × volume</td></tr>
+          <tr><td>Meta Ads (retargeting quente)</td><td>R$3–12</td><td>5–15%</td><td>Fechamento, últimos dias</td></tr>
+          <tr><td>API Oficial WhatsApp</td><td>R$2–8</td><td>10–25%</td><td>Base existente, orgânico</td></tr>
+          <tr><td>Base de alunos low ticket</td><td>R$0 (já pago)</td><td>15–25%</td><td>Qualidade máxima</td></tr>
+          <tr><td>Google Ads / YouTube</td><td>Variável</td><td>Inconsistente</td><td>Testar conforme nicho</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── CRIATIVOS ── -->
+  <div class="section" id="s7">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(249,202,36,0.15);color:var(--accent4)">08</div>
+      <div>
+        <div class="section-title">Criativos Campeões</div>
+        <div class="section-subtitle">O que funciona, como estruturar e o que testar</div>
+      </div>
+    </div>
+
+    <h3>Estrutura do criativo para ingresso</h3>
+    <div class="copy-template">
+      <strong style="color:var(--text)">Vídeo 30–60s — roteiro base:</strong><br><br>
+      🎯 <span class="placeholder">[Hook visual/verbal — 2–3 seg]</span> — parar o scroll com uma afirmação provocadora ou situação reconhecível<br>
+      🔍 <span class="placeholder">[Identifica o problema/situação]</span> — "Se você [contexto], esse vídeo é para você"<br>
+      💡 <span class="placeholder">[Apresenta a solução]</span> — "Eu vou fazer uma imersão ao vivo de X aulas onde a gente vai [entregável]"<br>
+      📊 <span class="placeholder">[Prova rápida]</span> — número, resultado de aluno, antes/depois<br>
+      🚨 <span class="placeholder">[Urgência/escassez]</span> — lote X, vagas limitadas, data próxima<br>
+      📲 <span class="placeholder">[CTA direto]</span> — "Garanta seu ingresso no link abaixo"
+    </div>
+
+    <h3>Tipos de hook que mais convertem para lançamento</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo de hook</th><th>Estrutura</th><th>Exemplo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Temporal específico</strong></td><td>"Em [X dias/aulas] você vai [resultado]"</td><td>"Em 3 aulas, vamos montar seu cardápio de buffet do zero"</td></tr>
+          <tr><td><strong>Confissão/surpresa</strong></td><td>"Eu fiz X e o resultado foi Y [inesperado]"</td><td>"Cobrei R$47 por ingresso e recuperei o tráfego antes do evento começar"</td></tr>
+          <tr><td><strong>Pergunta provocadora</strong></td><td>"Você [faz/acredita em X]? Então..."</td><td>"Você cobra por evento mas não calcula CMV? Isso te faz perder dinheiro todo mês"</td></tr>
+          <tr><td><strong>Resultado de aluno</strong></td><td>Prova social direta</td><td>"Ela montou o buffet em 30 dias e hoje fatura R$12k/mês"</td></tr>
+          <tr><td><strong>Contraste</strong></td><td>Antes vs depois visível</td><td>Imagem antes/depois de cardápio, cozinha, resultado financeiro</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Volume mínimo de testes</h3>
+    <div class="card-grid">
+      <div class="card card-accent">
+        <div class="card-title">Fase inicial de teste</div>
+        <p>3–5 criativos diferentes (hooks variados). 2–3 variações de headline na página. Mínimo 7 dias antes de julgar. Decisão baseada em custo/venda por UTM.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Na escala</div>
+        <p>2–3 criativos campeões isolados. Novas baterias a cada 7–10 dias. Sempre manter pelo menos 1 novo criativo em teste junto com os campeões.</p>
+      </div>
+    </div>
+
+    <div class="callout callout-yellow">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-text"><strong>Alinhamento criativo ↔ página é a maior alavanca de conversão:</strong>
+        Identifique qual criativo está trazendo mais vendas. Pegue a promessa específica desse criativo e espelhe na headline da sua página de captação. Isso sozinho pode dobrar sua conversão.</div>
+    </div>
+  </div>
+
+  <!-- ── API OFICIAL ── -->
+  <div class="section" id="s8">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(249,202,36,0.15);color:var(--accent4)">09</div>
+      <div>
+        <div class="section-title">API Oficial e Base de Clientes</div>
+        <div class="section-subtitle">O canal de venda que supera todos os outros em lead quente</div>
+      </div>
+    </div>
+
+    <blockquote>A API Oficial WhatsApp foi o <strong>principal canal de venda orgânica</strong> em múltiplos lançamentos — superando criativos orgânicos, e-mail e tráfego pago para a base.</blockquote>
+
+    <h3>Fluxo de uso da API no lançamento</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">Semana -3 a -2 (pré-captação)</div>
+        <div class="timeline-content">Mensagem de utilidade para base geral: "Tenho um convite para você. Posso te mandar mais detalhes?" — abre janela de conversa. Alta taxa de interação.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Semana -1 (captação)</div>
+        <div class="timeline-content">Oferta de ingresso com 50% de desconto para base de compradores do low ticket. Conversão média: 20%.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Abertura de carrinho</div>
+        <div class="timeline-content">Mensagem de serviço (dentro da janela 24h pós-interação): link direto para checkout do produto principal. Sem restrição de envio de CTA.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Ao longo do carrinho</div>
+        <div class="timeline-content">Disparos de objeções frequentes (colhidas no chat ao vivo), escassez de lote, último dia.</div>
+      </div>
+    </div>
+
+    <h3>Templates de mensagem que funcionam</h3>
+    <div class="card card-accent" style="margin-bottom:10px">
+      <div class="card-title">Template — Convite (pré-captação)</div>
+      <div class="copy-template">
+        Oi, <span class="placeholder">[primeiro nome]</span>! 👋<br><br>
+        Eu vou fazer uma imersão ao vivo de <span class="placeholder">[X aulas]</span> sobre <span class="placeholder">[tema]</span>.<br>
+        Posso te mandar mais detalhes?
+      </div>
+    </div>
+    <div class="card card-green" style="margin-bottom:10px">
+      <div class="card-title">Template — Abertura de carrinho (mensagem de serviço)</div>
+      <div class="copy-template">
+        Boa noite, <span class="placeholder">[nome]</span>! 🎉<br><br>
+        As inscrições para <span class="placeholder">[nome do produto]</span> estão abertas.<br>
+        Você pode garantir o seu acesso aqui: <span class="placeholder">[link]</span><br><br>
+        Qualquer dúvida, é só responder aqui.
+      </div>
+    </div>
+    <div class="card card-yellow">
+      <div class="card-title">Template — Base de alunos low ticket (50% OFF)</div>
+      <div class="copy-template">
+        <span class="placeholder">[Nome]</span>, como aluno(a) de <span class="placeholder">[produto anterior]</span>, você tem acesso a um ingresso especial com 50% de desconto para a nossa imersão ao vivo.<br><br>
+        São <span class="placeholder">[X aulas]</span> onde vamos <span class="placeholder">[entregável concreto]</span>.<br>
+        Garante o seu aqui: <span class="placeholder">[link exclusivo]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TESTE A/B ── -->
+  <div class="section" id="s9">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(249,202,36,0.15);color:var(--accent4)">10</div>
+      <div>
+        <div class="section-title">Teste A/B de Página</div>
+        <div class="section-subtitle">Como descobrir a headline que converte mais antes de escalar</div>
+      </div>
+    </div>
+
+    <h3>Por que o teste A/B é obrigatório</h3>
+    <p>Mudar uma única headline pode triplicar a conversão da página. Um teste A/B mal configurado ou ignorado é dinheiro desperdiçado em escala.</p>
+
+    <div class="card card-accent">
+      <div class="card-title">Caso real: página genérica vs específica</div>
+      <div class="table-wrap" style="margin-top:10px">
+        <table>
+          <thead><tr><th>Versão</th><th>Headline</th><th>Conversão</th></tr></thead>
+          <tbody>
+            <tr><td>Página A</td><td>"Aprenda a montar uma carteira de investimentos blindada"</td><td>3,0%</td></tr>
+            <tr><td>Página B</td><td>"Como montar sua carteira de aposentadoria em 15 anos" (versão intermediária)</td><td>2,2%</td></tr>
+            <tr><td>Página C</td><td>"Em 3 aulas, vamos montar sua carteira de aposentadoria em até 15 anos"</td><td><strong>7,4%</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Como fazer o teste corretamente</h3>
+    <ul class="checklist">
+      <li>Teste apenas <strong>uma variável por vez</strong> — geralmente a headline principal</li>
+      <li>Divida o tráfego igualmente entre as versões (1/3 para 3 páginas, 50/50 para 2)</li>
+      <li>Mínimo de 100 visitas por página antes de julgar</li>
+      <li>Julgue por <strong>conversão em venda</strong>, não por clique ou visita</li>
+      <li>Alinhe a headline vencedora com o criativo que mais converte</li>
+      <li>Não encerre o teste cedo — aguarde significância estatística</li>
+    </ul>
+
+    <h3>O que testar em ordem de impacto</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Elemento</th><th>Impacto</th><th>O que variar</th></tr></thead>
+        <tbody>
+          <tr><td>Headline principal</td><td>⭐⭐⭐⭐⭐</td><td>Promessa genérica vs específica vs temporal</td></tr>
+          <tr><td>Foto/vídeo do expert</td><td>⭐⭐⭐⭐</td><td>Foto formal vs casual vs em ação</td></tr>
+          <tr><td>Subheadline / bullet points</td><td>⭐⭐⭐</td><td>Benefícios vs quebradores de objeção</td></tr>
+          <tr><td>Texto do botão CTA</td><td>⭐⭐⭐</td><td>"Quero meu ingresso" vs "Garantir vaga" vs "Inscrever agora"</td></tr>
+          <tr><td>Preço visível / oculto</td><td>⭐⭐</td><td>Mostrar preço cedo vs depois da proposta de valor</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       EVENTO
+  ══════════════════════════════════════ -->
+  <div class="section" id="s10">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,101,132,0.15);color:var(--accent2)">11</div>
+      <div>
+        <div class="section-title">Formato e Estrutura do Evento</div>
+        <div class="section-subtitle">Como estruturar as aulas para máxima conversão no pit</div>
+      </div>
+    </div>
+
+    <h3>Formatos mais usados</h3>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="card-title">Formato A — 3 Aulas em Dias Separados</div>
+        <p>Aulas de 60–90 min em noites consecutivas (seg/ter/qua ou ter/qui/sex). Mais fácil de consumir replay. Mais fragmentado = melhor assimilação. Gera mais seeding ao longo do tempo.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Formato B — Dia Único de Imersão</div>
+        <p>6–8 horas no mesmo dia. Menos cansativo para o expert. Mais difícil de encaixar na agenda dos participantes. Menor consumo de replay.</p>
+      </div>
+    </div>
+
+    <h3>Plataforma</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Plataforma</th><th>Prós</th><th>Contras</th><th>Melhor para</th></tr></thead>
+        <tbody>
+          <tr><td><strong>YouTube (não listado)</strong></td><td>Grátis, estável, sem limite de participantes, replay automático</td><td>Menos controle, comentários públicos</td><td>Audiência mista, base mais velha</td></tr>
+          <tr><td><strong>Zoom</strong></td><td>Interação alta, polls, breakout rooms</td><td>Problemas técnicos com audiência não-tech, custo</td><td>Audiência engajada, grupos menores</td></tr>
+          <tr><td><strong>Hotmart Sparkle</strong></td><td>Integração com produto, login automático para compradores</td><td>Menos funcionalidades de live</td><td>Lançamentos dentro do ecossistema Hotmart</td></tr>
+          <tr><td><strong>StreamYard + YouTube</strong></td><td>Produção profissional, tela personalizável</td><td>Custo da ferramenta</td><td>Quem quer produção mais polida</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cronograma de aulas (3 dias)</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">Aula 1 — Diagnóstico e Fundamentos</div>
+        <div class="timeline-content">Estabelece autoridade. Mostra o problema na raiz. Entrega o primeiro resultado prático (o "quick win"). Fecha com teaser do que vem na aula 2.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Aula 2 — Método e Execução</div>
+        <div class="timeline-content">Entrega o núcleo do método. Mostra passo a passo com exemplos reais. Participantes saem com algo feito ou quase pronto. Seeding leve do produto principal.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Aula 3 — Resultado e Pit</div>
+        <div class="timeline-content">Consolida a transformação. Mostra o que fica faltando (o gap que o produto principal resolve). Abertura do carrinho + pit completo.</div>
+      </div>
+    </div>
+
+    <h3>Replay — sim ou não?</h3>
+    <div class="grid-2">
+      <div class="card card-green">
+        <div class="card-title">✅ Disponibilizar por tempo limitado</div>
+        <p>Final de semana após a imersão. Aumenta comparecimento tardio. Mantém engajamento enquanto o carrinho está aberto. Especialmente útil para audiências mais velhas.</p>
+      </div>
+      <div class="card card-yellow">
+        <div class="card-title">💰 Acesso vitalício como Order Bump</div>
+        <p>R$47–97. Conversão média de 9–15%. Receita adicional com zero custo de produção. Ativa o mesmo público que quer o conteúdo mas não pôde assistir ao vivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NARRATIVA ── -->
+  <div class="section" id="s11">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,101,132,0.15);color:var(--accent2)">12</div>
+      <div>
+        <div class="section-title">Narrativa e Seeding</div>
+        <div class="section-subtitle">Como plantar o desejo pelo produto principal ao longo das aulas</div>
+      </div>
+    </div>
+
+    <h3>A lógica do seeding</h3>
+    <p>O seeding é a arte de gerar desejo pelo produto principal <em>sem fazer uma oferta</em>. Cada aula deve deixar o participante com um sentimento: "o que vem depois disso?"</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Aula</th><th>Conteúdo entregue</th><th>Seeding plantado</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Aula 1</td>
+            <td>O diagnóstico do problema + primeiro passo</td>
+            <td>"Nos próximos dias vou mostrar o que os melhores do nicho fazem que você ainda não viu"</td>
+          </tr>
+          <tr>
+            <td>Aula 2</td>
+            <td>O método principal</td>
+            <td>"Isso aqui é o fundamento — mas a aplicação avançada, com acompanhamento, muda tudo"</td>
+          </tr>
+          <tr>
+            <td>Aula 3 (pré-pit)</td>
+            <td>O que fica faltando / o gap</td>
+            <td>Evidencia o problema que persiste sem suporte contínuo = justifica o produto principal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Tipos de seeding que funcionam</h3>
+    <div class="card-grid">
+      <div class="card card-accent">
+        <div class="card-title">Seeding de prova social</div>
+        <p>Cases de alunos do produto principal durante as aulas. "Fulano fez exatamente isso aqui e X meses depois..."</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Seeding de complexidade</div>
+        <p>"Isso que eu ensinei aqui funciona. Quando você vai para o próximo nível, as variáveis mudam e é aí que ter um guia faz diferença."</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Seeding de escassez de tempo</div>
+        <p>Mostra quanto tempo leva fazer sozinho vs com suporte. "Meus alunos chegam nesse resultado em X semanas com acompanhamento."</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Seeding de incompletude</div>
+        <p>Entrega 80% da solução nas aulas, deixa o gap claro. A oferta do produto principal resolve o 20% restante (que é justamente o mais difícil).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ORDER BUMPS ── -->
+  <div class="section" id="s12">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(255,101,132,0.15);color:var(--accent2)">13</div>
+      <div>
+        <div class="section-title">Order Bumps</div>
+        <div class="section-subtitle">Como estruturar os bumps para maximizar receita e engajamento</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text"><strong>Os Order Bumps têm objetivos além do dinheiro.</strong>
+        Cada bump serve a um propósito estratégico: comparecimento, consciência, desejo pelo produto principal, ou mais pontos de contato com a marca. O dinheiro é consequência.</div>
+    </div>
+
+    <h3>Estrutura de 3 Order Bumps</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Bump</th><th>Produto</th><th>Preço</th><th>Objetivo estratégico</th><th>Conv. esperada</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Bump 1</strong></td>
+            <td>Replay vitalício das aulas</td>
+            <td>R$47–97</td>
+            <td>Aumentar comparecimento e conversão no pit</td>
+            <td>9–20%</td>
+          </tr>
+          <tr>
+            <td><strong>Bump 2</strong></td>
+            <td>Debrief / bastidores / método avançado</td>
+            <td>R$47–97</td>
+            <td>Gerar desejo consciente pelo produto principal</td>
+            <td>15–32%</td>
+          </tr>
+          <tr>
+            <td><strong>Bump 3</strong></td>
+            <td>Template / ferramenta / drive de materiais</td>
+            <td>R$7–37</td>
+            <td>Mais pontos de contato, reconexão com a marca</td>
+            <td>15–25%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Lógica do Cashback como Bump</h3>
+    <p>O cashback é um bump de alto ticket: o ingresso vira crédito no produto principal. Quem compra o cashback está 3x mais propenso a aparecer e comprar.</p>
+    <div class="card card-yellow">
+      <div class="card-title">Exemplo: Bump de Cashback</div>
+      <p>Produto principal R$1.000. Ingresso R$60. Bump de cashback: "Pague R$60 agora e esse valor é descontado 100% do produto principal se você comprar até [data]." Conversão média: 3,5–4%.</p>
+    </div>
+
+    <h3>Regra: o bump não deve substituir a oferta principal</h3>
+    <div class="grid-2">
+      <div class="card card-red">
+        <div class="card-title">❌ Bump que prejudica</div>
+        <p>"10 primeiros compradores ganham encontro presencial exclusivo" — quem fica de fora perde o desejo pelo produto.</p>
+      </div>
+      <div class="card card-green">
+        <div class="card-title">✅ Bump que complementa</div>
+        <p>Livro físico por R$1 como bump. "É um bônus legal, mas sem ele o produto continua muito atrativo."</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       ABERTURA DE CARRINHO
+  ══════════════════════════════════════ -->
+  <div class="section" id="s13">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent)">14</div>
+      <div>
+        <div class="section-title">Cronograma do Carrinho</div>
+        <div class="section-subtitle">Como estruturar os dias de venda para máxima conversão</div>
+      </div>
+    </div>
+
+    <h3>Estrutura de 7 dias (modelo validado)</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">Dia 1 (Qui à noite) — Abertura</div>
+        <div class="timeline-content"><strong>Pico de vendas #1.</strong> Pit ao vivo + e-mail/WhatsApp de abertura. Preço inicial (menor). Urgência: "abrimos as inscrições agora".</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Dias 2–3 (Sex/Sáb) — Argumentação</div>
+        <div class="timeline-content">Sequência de objeções. Cases de alunos. Conteúdo de valor relacionado ao produto. Aquece quem ficou em dúvida.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Dia 4 (Dom) — Escassez 1</div>
+        <div class="timeline-content"><strong>Pico de vendas #2.</strong> Último dia do bônus especial (livro, sessão extra, material). Urgência real: amanhã o bônus some.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Dias 5–6 (Seg/Ter) — Novos argumentos</div>
+        <div class="timeline-content">Dúvidas frequentes respondidas. Novos casos e provas. Reforço dos benefícios que ainda não foram explorados.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Dia 6 (Qua à noite) — Live aberta</div>
+        <div class="timeline-content">Live gratuita sobre tema relacionado. Distribuição orgânica pelo YouTube/IG. Ao final: lembrete de que amanhã é o último dia.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">Dia 7 (Qui) — Escassez Final</div>
+        <div class="timeline-content"><strong>Pico de vendas #3 — geralmente o maior.</strong> Último dia absoluto. Disparo de WhatsApp + e-mail + retargeting. Carrinho fecha meia-noite.</div>
+      </div>
+    </div>
+
+    <h3>Distribuição de vendas esperada</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Momento</th><th>% das vendas totais</th></tr></thead>
+        <tbody>
+          <tr><td>Abertura (dia 1–2)</td><td>35–45%</td></tr>
+          <tr><td>Escassez 1 (bônus — dia 4)</td><td>15–20%</td></tr>
+          <tr><td>Meio do carrinho (dias 5–6)</td><td>10–15%</td></tr>
+          <tr><td>Último dia (dia 7)</td><td>25–35%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-icon">📌</div>
+      <div class="callout-text"><strong>Nunca dependa de uma única escassez.</strong>
+        Dois momentos de urgência (bônus + fechamento) com argumentação diferente entre eles é mais eficaz do que uma escassez de 7 dias consecutivos. O intervalo entre elas permite "respirar" e chegar na segunda com novos argumentos.</div>
+    </div>
+  </div>
+
+  <!-- ── COPY ── -->
+  <div class="section" id="s14">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent)">15</div>
+      <div>
+        <div class="section-title">Copy e Escassez</div>
+        <div class="section-subtitle">Como comunicar a oferta e criar urgência legítima</div>
+      </div>
+    </div>
+
+    <h3>Sequência de copy ao longo do carrinho</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dia</th><th>Tom</th><th>Objetivo</th><th>Canal</th></tr></thead>
+        <tbody>
+          <tr><td>Abertura</td><td>Entusiasmo + urgência inicial</td><td>Capturar os prontos</td><td>WhatsApp + e-mail + retargeting</td></tr>
+          <tr><td>Dia 2</td><td>Histórias de transformação</td><td>Subir nível de consciência</td><td>Stories + e-mail</td></tr>
+          <tr><td>Dia 3</td><td>Objeção #1 respondida</td><td>Quebrar barreira mais comum</td><td>WhatsApp + post</td></tr>
+          <tr><td>Escassez 1</td><td>Urgência + loss aversion</td><td>Ativar os indecisos</td><td>WhatsApp + e-mail + ad retargeting</td></tr>
+          <tr><td>Dia 5</td><td>Objeção #2 respondida</td><td>Remover segunda barreira</td><td>E-mail + WhatsApp</td></tr>
+          <tr><td>Dia 6</td><td>Conteúdo gratuito de valor</td><td>Subir desejo, distribuição orgânica</td><td>Live YouTube/IG</td></tr>
+          <tr><td>Último dia</td><td>Urgência máxima + consequência</td><td>Converter os que faltam</td><td>Todos os canais, múltiplos disparos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Gatilhos mais eficazes no lançamento pago</h3>
+    <div class="card-grid">
+      <div class="card card-accent">
+        <div class="card-title">⏰ Escassez de Tempo</div>
+        <p>"Carrinho fecha quinta à meia-noite. Depois disso, só na próxima turma." Real e honesto — nunca fake.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">📉 Loss Aversion</div>
+        <p>"Amanhã o bônus X sai. Você não vai perder R$[valor] que poderia ter por R$1?" Focar no que se perde, não no que se ganha.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">👥 Prova Social + Urgência</div>
+        <p>"Já são X pessoas inscritas. As últimas vagas estão indo." Especialmente poderoso combinado com contagem real.</p>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">🎯 Especificidade do resultado</div>
+        <p>Não "você vai melhorar seus negócios". Mas "em 30 dias você vai ter [entregável concreto] pronto e implementado."</p>
+      </div>
+    </div>
+
+    <h3>Objeções mais comuns e como quebrar</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Objeção</th><th>Como responder</th></tr></thead>
+        <tbody>
+          <tr><td>"Não tenho tempo"</td><td>Mostre quanto tempo dura o acesso + que pode fazer no próprio ritmo. Quanto tempo a pessoa perde sem resolver o problema.</td></tr>
+          <tr><td>"Não sei se é pra mim"</td><td>Liste os perfis exatos que já obtiveram resultado. Ofereça garantia que remove o risco.</td></tr>
+          <tr><td>"É caro"</td><td>Reframe: "R$[preço] vs [custo de não resolver o problema]". Mostre o ROI esperado em valores reais.</td></tr>
+          <tr><td>"Já tentei antes e não funcionou"</td><td>Diferencial do método. O que você faz diferente. Garantia como prova de confiança.</td></tr>
+          <tr><td>"Vou esperar a próxima turma"</td><td>Consequência real de esperar. Próxima turma com preço maior ou sem bônus atual.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PIT ── -->
+  <div class="section" id="s15">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(108,99,255,0.15);color:var(--accent)">16</div>
+      <div>
+        <div class="section-title">Pit de Vendas</div>
+        <div class="section-subtitle">Como fazer a oferta no final do evento e maximizar conversão</div>
+      </div>
+    </div>
+
+    <h3>Estrutura do pit (45–60 min)</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">1. Transição (5 min)</div>
+        <div class="timeline-content">Resume o que foi entregue. Reconhece o progresso do participante. Cria ponte para "o próximo passo".</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">2. O Gap (10 min)</div>
+        <div class="timeline-content">Mostra o que ainda falta. O que não é possível resolver sozinho ou em 3 dias. A diferença entre saber e executar com consistência.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">3. A Solução (15 min)</div>
+        <div class="timeline-content">Apresenta o produto principal. Módulos/entregas. O que muda na vida do aluno. Provas sociais recentes e específicas.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">4. A Oferta (10 min)</div>
+        <div class="timeline-content">Preço + condições. Bônus exclusivos para quem comprar hoje. Garantia. Order Bumps disponíveis.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-label">5. Urgência + Fechamento (10 min)</div>
+        <div class="timeline-content">Deadline real. Consequência de não comprar agora. CTA claro com link. QA enquanto o carrinho está aberto.</div>
+      </div>
+    </div>
+
+    <h3>Erros mais comuns no pit</h3>
+    <div class="card-grid">
+      <div class="card card-red">
+        <div class="card-title">❌ Pit sem seeding anterior</div>
+        <p>O participante chega na oferta sem ter sido preparado. A surpresa gera resistência. O seeding nas aulas 1 e 2 é o que torna o pit fluido.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">❌ Oferta antes do gap</div>
+        <p>Apresentar o produto antes de mostrar o problema que ele resolve. O participante precisa primeiro sentir que precisa, depois receber a solução.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">❌ Garantia vaga</div>
+        <p>"Satisfação garantida" não convence. "7 dias com reembolso total, sem perguntas, enviando um e-mail" é específico e remove o risco percebido.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-title">❌ Falta de prova específica</div>
+        <p>Testemunhal sem contexto ("mudou minha vida") vs testemunhal específico ("em 45 dias faturei R$8k a mais com o método"). O segundo converte muito mais.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       MÉTRICAS
+  ══════════════════════════════════════ -->
+  <div class="section" id="s16">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">17</div>
+      <div>
+        <div class="section-title">KPIs por Fase</div>
+        <div class="section-subtitle">O que medir, quando medir e o que fazer com os dados</div>
+      </div>
+    </div>
+
+    <h3>Métricas de captação</h3>
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-val">1–4%</div>
+        <div class="metric-lbl">CVR página fria</div>
+        <div class="metric-ref">Tráfego frio → ingresso</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">R$8–25</div>
+        <div class="metric-lbl">CPL aceitável</div>
+        <div class="metric-ref">Custo por ingresso vendido</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">&gt;1x</div>
+        <div class="metric-lbl">ROAS meta captação</div>
+        <div class="metric-ref">Ingressos cobrem tráfego</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">≥24/dia</div>
+        <div class="metric-lbl">Pacing diário</div>
+        <div class="metric-ref">Para meta de 750 em 30 dias</div>
+      </div>
+    </div>
+
+    <h3>Métricas do evento</h3>
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-val">50–80%</div>
+        <div class="metric-lbl">Comparecimento</div>
+        <div class="metric-ref">% dos compradores ao vivo</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">9–25%</div>
+        <div class="metric-lbl">Conv. Order Bump replay</div>
+        <div class="metric-ref">% que compra acesso vitalício</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">15–32%</div>
+        <div class="metric-lbl">Conv. Order Bump conteúdo</div>
+        <div class="metric-ref">Debrief, material complementar</div>
+      </div>
+    </div>
+
+    <h3>Métricas de conversão</h3>
+    <div class="metric-row">
+      <div class="metric-card">
+        <div class="metric-val">6–26%</div>
+        <div class="metric-lbl">Conv. ingresso → prod. principal</div>
+        <div class="metric-ref">Meta realista: 14%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">20–27%</div>
+        <div class="metric-lbl">Conv. gravações → prod. principal</div>
+        <div class="metric-ref">Gravações = leads mais qualificadas</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">4–5x</div>
+        <div class="metric-lbl">ROAS total (ROAS Real)</div>
+        <div class="metric-ref">fat_liquido / (spend × 1.12)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">5–7%</div>
+        <div class="metric-lbl">Conv. downsell</div>
+        <div class="metric-ref">Se aplicável ao nicho</div>
+      </div>
+    </div>
+
+    <div class="callout callout-yellow">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-text"><strong>Meça por UTM, nunca só pelo pixel:</strong>
+        O gerenciador de anúncios do Meta infla conversões. O número real vem das UTMs rastreadas na plataforma de vendas (Hotmart, etc). ROAS Real = faturamento líquido / (investimento × 1.12). Esse é o único número que importa para decisão de escala.</div>
+    </div>
+
+    <h3>Sinais de problema e ação corretiva</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Sinal</th><th>Causa provável</th><th>Ação</th></tr></thead>
+        <tbody>
+          <tr><td>CTR alto + poucas vendas de ingresso</td><td>Página desalinhada com criativo, ou promessa fraca</td><td>Teste A/B de headline; alinhar com criativo vencedor</td></tr>
+          <tr><td>Ingressos vendendo + baixo comparecimento</td><td>Público frio demais, ou promessa ampla demais</td><td>Aumentar retargeting da base; reforçar lembretes próximos ao evento</td></tr>
+          <tr><td>Alto comparecimento + baixa conversão no pit</td><td>Seeding insuficiente, oferta desalinhada, preço fora</td><td>Revisar narrativa das aulas; gap entre imersão e produto principal</td></tr>
+          <tr><td>Conversão boa + ROAS abaixo de 2x</td><td>Ticket do produto principal baixo demais ou tráfego caro</td><td>Rever precificação do produto principal; otimizar criativos</td></tr>
+          <tr><td>Carrinho sem vendas nos dias intermediários</td><td>Falta de follow-up entre as escassezes</td><td>Programar sequência de objeções + conteúdo de valor nos dias "mortos"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PLANILHA ── -->
+  <div class="section" id="s17">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">18</div>
+      <div>
+        <div class="section-title">Planilha de Controle</div>
+        <div class="section-subtitle">O que monitorar diariamente durante o lançamento</div>
+      </div>
+    </div>
+
+    <h3>Dados para monitorar todo dia (captação)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Métrica</th><th>Fórmula</th><th>Meta diária</th></tr></thead>
+        <tbody>
+          <tr><td>Ingressos vendidos (acumulado)</td><td>Soma da plataforma</td><td>Meta total ÷ dias de captação</td></tr>
+          <tr><td>Custo total de tráfego</td><td>Soma das campanhas Meta</td><td>≤ Receita de ingressos do dia</td></tr>
+          <tr><td>CPL (custo por ingresso)</td><td>Spend ÷ ingressos vendidos</td><td>≤ R$25</td></tr>
+          <tr><td>ROAS captação</td><td>Receita ingressos ÷ (spend × 1.12)</td><td>≥ 1.0x</td></tr>
+          <tr><td>CVR da página</td><td>Vendas ÷ visitas</td><td>≥ 2% frio, ≥ 8% quente</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Dados para monitorar durante o carrinho</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Métrica</th><th>Fórmula</th><th>Meta</th></tr></thead>
+        <tbody>
+          <tr><td>Vendas produto principal (acumulado)</td><td>Plataforma de vendas</td><td>6–26% dos ingressos</td></tr>
+          <tr><td>Ticket médio do cliente</td><td>(Ingressos + bumps + prod. princ.) ÷ compradores únicos</td><td>≥ 2× preço do ingresso</td></tr>
+          <tr><td>Taxa de bump</td><td>Bump vendidos ÷ ingressos</td><td>≥ 15%</td></tr>
+          <tr><td>ROAS total do lançamento</td><td>Fat. líquido total ÷ (spend total × 1.12)</td><td>≥ 3x</td></tr>
+          <tr><td>Receita por dia de carrinho</td><td>Vendas do dia ÷ dias de carrinho</td><td>Picos na abertura e no último dia</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── CHECKLISTS ── -->
+  <div class="section" id="s18">
+    <div class="section-header">
+      <div class="section-num" style="background:rgba(67,233,123,0.15);color:var(--accent3)">19</div>
+      <div>
+        <div class="section-title">Checklists Completos</div>
+        <div class="section-subtitle">Tudo que precisa estar pronto antes de cada fase</div>
+      </div>
+    </div>
+
+    <h3>Checklist — Planejamento (4 semanas antes)</h3>
+    <ul class="checklist">
+      <li>Promessa do evento definida (com resultado específico e temporal)</li>
+      <li>Produto principal definido (o que vai ser vendido no pit)</li>
+      <li>Esteira verificada (ingresso → produto principal faz sentido)</li>
+      <li>Datas do evento definidas</li>
+      <li>Lotes de ingressos configurados com preços</li>
+      <li>Projeção financeira feita (meta de ingressos, receita projetada, ROAS esperado)</li>
+      <li>Plataforma de evento escolhida (YouTube, Zoom, etc)</li>
+    </ul>
+
+    <h3>Checklist — Infra-estrutura (2 semanas antes)</h3>
+    <ul class="checklist">
+      <li>Landing page de captação publicada e testada em mobile</li>
+      <li>Teste A/B de headline configurado (mínimo 2 versões)</li>
+      <li>Checkout de ingresso configurado e testado com compra real</li>
+      <li>Order Bumps 1, 2 e 3 configurados no checkout</li>
+      <li>Pixel do Meta instalado + evento Purchase disparando</li>
+      <li>UTMs configuradas em todos os links de tráfego pago</li>
+      <li>Página de obrigado com próximo passo (grupo, WhatsApp, instruções)</li>
+      <li>E-mail/WhatsApp de boas-vindas automático configurado</li>
+      <li>Grupo de participantes criado e link de acesso automático</li>
+      <li>Dashboard de monitoramento montado (receita × gasto × ROAS)</li>
+    </ul>
+
+    <h3>Checklist — Tráfego (1 semana antes)</h3>
+    <ul class="checklist">
+      <li>Mínimo 3 criativos diferentes criados (hooks distintos)</li>
+      <li>Campanha Advantage+ (público aberto) configurada</li>
+      <li>Campanha de base/low ticket configurada (se aplicável)</li>
+      <li>Orçamento diário definido por fase</li>
+      <li>API Oficial — disparos programados (convite + oferta)</li>
+      <li>Sequência de e-mail de captação configurada</li>
+      <li>Single Shot — público configurado e excluído de campanha principal</li>
+    </ul>
+
+    <h3>Checklist — Evento</h3>
+    <ul class="checklist">
+      <li>Roteiro das 3 aulas escrito com seeding planejado</li>
+      <li>Links das lives criados e testados</li>
+      <li>Slides preparados com entregável concreto</li>
+      <li>Lembretes automáticos programados (24h antes e 1h antes de cada aula)</li>
+      <li>Pit de vendas roteirizado (gap → solução → oferta → urgência)</li>
+      <li>Link do checkout do produto principal testado</li>
+      <li>QA planejado (assistente para moderar e responder dúvidas)</li>
+    </ul>
+
+    <h3>Checklist — Carrinho aberto</h3>
+    <ul class="checklist">
+      <li>Sequência de e-mail / WhatsApp de 7 dias programada</li>
+      <li>Retargeting configurado com criativo de carrinho aberto</li>
+      <li>Bônus de escassez definido e comunicado claramente</li>
+      <li>Objeções coletadas durante o evento → copy de resposta criada</li>
+      <li>Live aberta planejada para dia 6 (conteúdo + lembrete)</li>
+      <li>Monitoring de vendas diário → ajuste de copy conforme dados</li>
+      <li>Downsell configurado (se aplicável) para ativar após fechamento</li>
+    </ul>
+
+    <hr class="divider">
+
+    <div class="callout callout-green">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-text">
+        <strong>Princípio central do lançamento pago:</strong>
+        O ingresso não é onde você lucra. É onde você filtra. O lucro real vem da combinação de bumps + produto principal + relacionamento de longo prazo com o comprador. Pense no ingresso como o começo de uma esteira, não como uma venda isolada.
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <p style="font-size:12px;color:var(--text-dim);text-align:center">
+      Manual gerado com base em dados de múltiplos lançamentos validados (Marcelo Távora/VK, Will Kimura e outros) + framework interno Chef Fred · Junho 2026
+    </p>
+
+  </div>
+
+</main>
+
+<script>
+  // Navegação ativa no scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
